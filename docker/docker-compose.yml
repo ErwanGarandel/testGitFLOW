@@ -1,0 +1,36 @@
+version: '3'
+services:
+  php-apache:
+    build: dockerfile/apache/
+    ports:
+      - 8080:80
+    volumes:
+      - /Users/fguntz/Programmation/PhpstormProjects/coursLP/site1:/var/www/html/site1
+    links:
+      - 'mariadb'
+
+  mariadb:
+    build: dockerfile/mariadb
+    ports:
+      - 3306:3306
+    volumes:
+      - mariadb:/var/lib/mysql
+    environment:
+      TZ: "Europe/Paris"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+      MYSQL_ROOT_PASSWORD: "rootpwd"
+      MYSQL_USER: 'testuser'
+      MYSQL_PASSWORD: 'userpwd'
+      MYSQL_DATABASE: 'testdb'
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8081:80
+    environment:
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: 'rootpwd'
+
+volumes:
+  mariadb:
